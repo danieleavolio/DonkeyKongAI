@@ -65,8 +65,8 @@ public class MovementController implements KeyListener {
         if (keys[KeyEvent.VK_DOWN]) {
             if (player.canClimb)
                 player.moveDown();
-            if (DonkeYGame.getInstance().worldTable[player.posX][player.posY].type == DonkeYGame.LADDER ||
-                    DonkeYGame.getInstance().worldTable[player.posX][player.posY+1].type == DonkeYGame.LADDER)
+            if ((DonkeYGame.getInstance().worldTable[player.posX][player.posY].type == DonkeYGame.LADDER ||
+                    DonkeYGame.getInstance().worldTable[player.posX][player.posY+1].type == DonkeYGame.LADDER) && DonkeYGame.getInstance().worldTable[player.posX][player.posY+1].type != DonkeYGame.FERRO )
                 DonkeYGame.getInstance().player.moveDown();
         }
 
