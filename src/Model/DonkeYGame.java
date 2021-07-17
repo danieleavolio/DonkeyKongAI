@@ -3,10 +3,15 @@ package Model;
 import Controller.MovementController;
 import View.Graphics;
 
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.BindException;
+import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Timer;
 
 public  class DonkeYGame implements Runnable {
 
@@ -25,6 +30,9 @@ public  class DonkeYGame implements Runnable {
     public Ferro ferro;
     public Vuoto vuoto;
     public Scala scala;
+    public Barile barile;
+    ArrayList<Barile> barili = new ArrayList<Barile>();
+
     public final static int dimension = Main.DIM/20;
 
     public void makeTable() {
@@ -32,6 +40,7 @@ public  class DonkeYGame implements Runnable {
         player = new Player();
         ferro = new Ferro();
         scala = new Scala();
+        barili = new ArrayList<>();
         gameTable = new GameObj[dimension][dimension];
         worldTable = new GameObj[dimension][dimension];
 
@@ -39,11 +48,8 @@ public  class DonkeYGame implements Runnable {
             for (int i1 = 0; i1 < gameTable.length; i1++) {
                 gameTable[i1][i] = vuoto ;
                 worldTable[i1][i] = vuoto;
-
-
             }
         }
-
         // GENERAZIONE MAPPA A MANO CHE DA FILE MI DAVA ERRORI
         for (int i = 20; i < gameTable.length; i++)
             worldTable[i][12] = ferro;
@@ -76,7 +82,6 @@ public  class DonkeYGame implements Runnable {
         for (int i = 16; i < 22; i++){
             worldTable[5][i] = scala;
         }
-
     }
 
     public static DonkeYGame getInstance(){
@@ -90,6 +95,27 @@ public  class DonkeYGame implements Runnable {
 
     }
 
+    public void generaBarili(int contatore){
+
+        if (contatore == 0) {
+            System.out.println("numero barili" + barili.size());
+            Barile barilone = new Barile(36,10);
+            barili.add(barilone);
+            gameTable[36][10] = barilone;
+        }
+    }
+
+    public void checkDeath(){
+
+        for (int i = 0; i < barili.size(); i++) {
+            if (player.posX+1 <= gameTable.length & player.posX-1 >= 0 &&player.posY+1 <= gameTable.length & player.posY-1 >= 0  )
+                if (gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
+                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) ){
+                    makeTable();
+                    Graphics.getInstance().reset();
+                }
+        }
+    }
     public void swap(int oldX, int oldY){
 
         switch(player.oldObj.type){
@@ -107,20 +133,68 @@ public  class DonkeYGame implements Runnable {
             }
         }
         gameTable[player.posX][player.posY] = player;
+    }
+
+    public void swapBarile(int oldX, int oldY, int index){
+        switch(barili.get(index).oldObj.type){
+            case FERRO:{
+                gameTable[oldX][oldY] = ferro;
+                break;
+            }
+            case LADDER:{
+                gameTable[oldX][oldY] = scala;
+                break;
+            }
+            case VUOTO:{
+                gameTable[oldX][oldY] = vuoto;
+                break;
+            }
+        }
+        gameTable[barili.get(index).posX][barili.get(index).posY] = barili.get(index);
 
     }
 
 
+    public void gravitaBarili() {
+        for (int i = 0; i < barili.size(); i++) {
+            if (worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != FERRO && worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != LADDER) {
+                barili.get(i).falling = true;
+                barili.get(i).moveDownBarrel(i);
+            }
+            else {
+                barili.get(i).falling = false;
+            }
+        }
+    }
+    
+    public synchronized void distruzioneBarili(){
+        for (int i = 0; i < barili.size(); i++) {
+            if (barili.get(i).posX-2<=0 && barili.get(i).posY>=34){
+                gameTable[barili.get(i).posX][barili.get(i).posY] = vuoto;
+                barili.remove(i);
+            }
+        }
+    }
 
     @Override
     public void run() {
+        int contatore = 0;
         while(true){
             try {
                 Thread.sleep(60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if (contatore>=100)
+                contatore=0;
+            generaBarili(contatore);
+            contatore++;
 
+            for (int i = 0; i < barili.size(); i++) {
+                barili.get(i).muoviBarile(i);
+            }
+            //GRAVITA' BARILI
+            gravitaBarili();
             //PLAYER JUMP
 
             if (!player.isJumping){
@@ -148,6 +222,10 @@ public  class DonkeYGame implements Runnable {
             }
             MovementController.getInstance().update();
             Graphics.getInstance().repaint();
+            checkDeath();
+            distruzioneBarili();
         }
     }
+
+
 }

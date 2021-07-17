@@ -51,7 +51,7 @@ public class MovementController implements KeyListener {
 
         }
         if (keys[KeyEvent.VK_LEFT]) {
-            if (DonkeYGame.getInstance().worldTable[player.posX - 1][player.posY].type != DonkeYGame.FERRO && player.posX - 1 > 0)
+            if (DonkeYGame.getInstance().worldTable[player.posX - 1][player.posY].type != DonkeYGame.FERRO && player.posX-1 > 0)
                 DonkeYGame.getInstance().player.moveLeft();
 
         }

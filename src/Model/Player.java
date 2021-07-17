@@ -3,14 +3,16 @@ package Model;
 public class Player extends GameObj {
 
     int jumpingPos;
-    public boolean canClimb = false;
-    boolean isJumping = false;
+    public boolean canClimb;
+    boolean isJumping;
 
     public Player() {
         type = DonkeYGame.PLAYER;
         oldObj = new Vuoto();
-        posX = 0;
+        posX = 1;
         posY = 35;
+        isJumping = false;
+        canClimb = true;
     }
 
     public void jump() {
