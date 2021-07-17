@@ -12,7 +12,8 @@ public class Player extends GameObj {
         posX = 1;
         posY = 35;
         isJumping = false;
-        canClimb = true;
+        canClimb = false;
+        jumpingPos=35;
     }
 
     public void jump() {

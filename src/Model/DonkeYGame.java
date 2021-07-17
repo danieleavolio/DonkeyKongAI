@@ -25,7 +25,7 @@ public  class DonkeYGame implements Runnable {
     public final static int FERRO = 4;
     public final static int LADDER = 5;
     public final static int VUOTO = 6;
-
+    public boolean running = true;
     public Player player;
     public Ferro ferro;
     public Vuoto vuoto;
@@ -92,13 +92,11 @@ public  class DonkeYGame implements Runnable {
     }
     private DonkeYGame() {
         makeTable();
-
     }
 
     public void generaBarili(int contatore){
 
         if (contatore == 0) {
-            System.out.println("numero barili" + barili.size());
             Barile barilone = new Barile(36,10);
             barili.add(barilone);
             gameTable[36][10] = barilone;
@@ -108,10 +106,14 @@ public  class DonkeYGame implements Runnable {
     public void checkDeath(){
 
         for (int i = 0; i < barili.size(); i++) {
+            //SE NON SONO AI BORDI
             if (player.posX+1 <= gameTable.length & player.posX-1 >= 0 &&player.posY+1 <= gameTable.length & player.posY-1 >= 0  )
-                if (gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
-                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) ){
-                    makeTable();
+                //SE HO UN BARILE A DESTRA O SINISTRA O SU O GIU E NON SONO SU UNA SCALA ALTRIMENTI SAREBBE MORTE CERTA, RICOMINCIA
+                if ((gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
+                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
+                        && worldTable[player.posX][player.posY].type!=LADDER){
+                    gameTable[player.posX][player.posY] = vuoto;
+                    running = false;
                     Graphics.getInstance().reset();
                 }
         }
@@ -176,20 +178,27 @@ public  class DonkeYGame implements Runnable {
         }
     }
 
+    public void checkWin(){
+        if (player.posX == 38 && player.posY==11){
+            running = false;
+        }
+    }
+
     @Override
     public void run() {
         int contatore = 0;
-        while(true){
+        while(running){
             try {
                 Thread.sleep(60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (contatore>=100)
+            if (contatore>=50)
                 contatore=0;
             generaBarili(contatore);
             contatore++;
-
+            checkDeath();
+            checkWin();
             for (int i = 0; i < barili.size(); i++) {
                 barili.get(i).muoviBarile(i);
             }
@@ -198,8 +207,9 @@ public  class DonkeYGame implements Runnable {
             //PLAYER JUMP
 
             if (!player.isJumping){
-                if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER)
+                if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
                     player.moveDown();
+                }
             }
             if (player.isJumping ){
                 player.moveUp();
@@ -222,8 +232,19 @@ public  class DonkeYGame implements Runnable {
             }
             MovementController.getInstance().update();
             Graphics.getInstance().repaint();
-            checkDeath();
             distruzioneBarili();
+
+        }
+        if (!running){
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            System.exit(0);
+                        }
+                    },
+                    500
+            );
         }
     }
 
