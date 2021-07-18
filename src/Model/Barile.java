@@ -20,7 +20,7 @@ public class Barile extends GameObj {
 
     public void muoviBarile(int index){
 
-        if (this.posX-1 <= 0)
+        if (this.posX-1 < 0)
             this.direzione*=-1;
 
         if (this.posX+1 >=DonkeYGame.getInstance().gameTable.length-2) {

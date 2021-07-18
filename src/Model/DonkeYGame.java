@@ -30,7 +30,6 @@ public  class DonkeYGame implements Runnable {
     public Ferro ferro;
     public Vuoto vuoto;
     public Scala scala;
-    public Barile barile;
     ArrayList<Barile> barili = new ArrayList<Barile>();
 
     public final static int dimension = Main.DIM/20;
@@ -50,37 +49,53 @@ public  class DonkeYGame implements Runnable {
                 worldTable[i1][i] = vuoto;
             }
         }
+
+
         // GENERAZIONE MAPPA A MANO CHE DA FILE MI DAVA ERRORI
-        for (int i = 20; i < gameTable.length; i++)
+
+        //generazione dei ferri
+        //ULTIO PIANO
+        for (int i = 16; i < gameTable.length; i++)
             worldTable[i][12] = ferro;
 
-        for (int i = 15; i < 25; i++)
-            worldTable[i][14] = ferro;
-
-        for (int i = 0; i < gameTable.length - 15; i++)
+       /* for (int i = 15; i < 25; i++)
+            worldTable[i][14] = ferro;*/
+        //PENULTIMO PIANO
+        for (int i = 2; i < gameTable.length - 15; i++)
             worldTable[i][16] = ferro;
-        for (int i = 0; i < gameTable.length - 20; i++)
-            worldTable[i][22] = ferro;
+        //3* PIANO
+        for (int i = 0; i < gameTable.length - 14; i++)
+            worldTable[i][21] = ferro;
+        //2* PIANO
         for (int i = 10; i < gameTable.length ; i++)
             worldTable[i][26] = ferro;
+        //1* PIANO
         for (int i = 0; i < gameTable.length - 10; i++)
             worldTable[i][32] = ferro;
+        //PIANO TERRA
         for (int i = 0; i < gameTable.length; i++)
             worldTable[i][37] = ferro;
 
+        //generazione della scala
+        //SCALA PIANO TERRA
         for (int i = 32; i < 37; i++){
             worldTable[30][i] = scala;
         }
-
+        //SCALA 2* PIANO
         for (int i = 26; i < 32; i++){
-            worldTable[10][i] = scala;
+            worldTable[12][i] = scala;
         }
-
-        for (int i = 22; i < 26; i++){
-            worldTable[20][i] = scala;
+        //SCALA 3* PIANO
+        for (int i = 21; i < 26; i++){
+            worldTable[24][i] = scala;
         }
-        for (int i = 16; i < 22; i++){
+        //SCALA 4* PIANO
+        for (int i = 16; i < 21; i++){
             worldTable[5][i] = scala;
+        }
+        //ULTIMA SCALA
+        for (int i = 12; i < 16; i++){
+            worldTable[22][i] = scala;
         }
     }
 
@@ -193,11 +208,12 @@ public  class DonkeYGame implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(player.posX + " -- " + player.posY);
             if (contatore>=50)
                 contatore=0;
             generaBarili(contatore);
             contatore++;
-            checkDeath();
+            //checkDeath();
             checkWin();
             for (int i = 0; i < barili.size(); i++) {
                 barili.get(i).muoviBarile(i);

@@ -11,8 +11,9 @@ public abstract class GameObj {
     public Vuoto vuoto;
 
     public void moveUp() {
-        if (posY - 1 >= 0 && DonkeYGame.getInstance().gameTable[posX][posY+1].type != DonkeYGame.FERRO &&
-                DonkeYGame.getInstance().gameTable[posX][posY-1].type != DonkeYGame.FERRO) {
+        /*if (posY - 1 >= 0 && DonkeYGame.getInstance().gameTable[posX][posY+1].type != DonkeYGame.FERRO &&
+                DonkeYGame.getInstance().gameTable[posX][posY-1].type != DonkeYGame.FERRO) */
+        if (posY -1 >= 0 && DonkeYGame.getInstance().worldTable[posX][posY-1].type!=DonkeYGame.FERRO){
             posY--;
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX, posY+1);
