@@ -5,7 +5,7 @@ public class Barile extends GameObj {
     public boolean canClimb = false;
     boolean isJumping = false;
     int direzione = SINISTRA;
-    boolean falling = false;
+    public boolean falling = false;
     public static final int DESTRA = 1;
     public static final int SINISTRA = -1;
     public Barile(int posx, int posy) {
@@ -57,5 +57,8 @@ public class Barile extends GameObj {
             DonkeYGame.getInstance().swapBarile(posX, posY - 1,index);
         }
     }
+
+
+
 
 }

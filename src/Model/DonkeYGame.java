@@ -30,7 +30,7 @@ public  class DonkeYGame implements Runnable {
     public Ferro ferro;
     public Vuoto vuoto;
     public Scala scala;
-    ArrayList<Barile> barili = new ArrayList<Barile>();
+    public ArrayList<Barile> barili = new ArrayList<Barile>();
 
     public final static int dimension = Main.DIM/20;
 
@@ -112,9 +112,9 @@ public  class DonkeYGame implements Runnable {
     public void generaBarili(int contatore){
 
         if (contatore == 0) {
-            Barile barilone = new Barile(36,10);
+            Barile barilone = new Barile(34,10);
             barili.add(barilone);
-            gameTable[36][10] = barilone;
+            gameTable[34][10] = barilone;
         }
     }
 
@@ -251,7 +251,7 @@ public  class DonkeYGame implements Runnable {
             distruzioneBarili();
 
         }
-        if (!running){
+        /*if (!running){
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
                         @Override
@@ -261,7 +261,7 @@ public  class DonkeYGame implements Runnable {
                     },
                     500
             );
-        }
+        }*/
     }
 
 

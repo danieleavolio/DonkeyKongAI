@@ -9,7 +9,7 @@ public abstract class GameObj {
 
     public GameObj oldObj;
     public Vuoto vuoto;
-
+    public int direzione = 1;
     public void moveUp() {
         /*if (posY - 1 >= 0 && DonkeYGame.getInstance().gameTable[posX][posY+1].type != DonkeYGame.FERRO &&
                 DonkeYGame.getInstance().gameTable[posX][posY-1].type != DonkeYGame.FERRO) */
@@ -34,6 +34,7 @@ public abstract class GameObj {
 
     public void moveLeft() {
         if (posX - 1 >= 0) {
+            direzione=-1;
             posX--;
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX + 1, posY);
@@ -44,12 +45,26 @@ public abstract class GameObj {
 
     public void moveRight() {
         if (posX + 1 < DonkeYGame.getInstance().dimension-1) {
+            direzione=1;
             posX++;
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX - 1, posY);
         }
     }
 
-    ;
+    public int getPosX() {
+        return posX;
+    }
 
+    public int getPosY() {
+        return posY;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
 }
