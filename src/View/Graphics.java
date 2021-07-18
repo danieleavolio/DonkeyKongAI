@@ -24,7 +24,8 @@ public class Graphics extends JPanel {
     BufferedImage barileCaduta;
     BufferedImage barileRotola;
     BufferedImage sfondo;
-    int direzione = 1;
+    BufferedImage vittoria;
+    BufferedImage sconfitta;
     private static Graphics graphics = null;
 
     private Graphics() {
@@ -39,6 +40,9 @@ public class Graphics extends JPanel {
             barileCaduta = ImageIO.read(new File("src/View/Sprites/barileCaduta.png"));
             barileRotola = ImageIO.read(new File("src/View/Sprites/barileRotola.png"));
             sfondo = ImageIO.read(new File("src/View/Sprites/sfondo.png"));
+            vittoria = ImageIO.read(new File("src/View/Sprites/vittoria.png"));
+            sconfitta = ImageIO.read(new File("src/View/Sprites/sconfitta.png"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,6 +100,14 @@ public class Graphics extends JPanel {
             else{
                 g.drawImage(barileRotola, barile.posX*20, barile.posY*20, 20,20, null);
             }
+        }
+
+        if (DonkeYGame.getInstance().vinto == 1){
+            g.drawImage(sconfitta,0,0,800,800,null);
+        }
+        else if(DonkeYGame.getInstance().vinto == 2){
+            g.drawImage(vittoria,0,0,800,800,null);
+
         }
 
     }

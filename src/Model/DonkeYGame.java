@@ -30,6 +30,7 @@ public  class DonkeYGame implements Runnable {
     public Ferro ferro;
     public Vuoto vuoto;
     public Scala scala;
+    public int vinto = 0;
     public ArrayList<Barile> barili = new ArrayList<Barile>();
 
     public final static int dimension = Main.DIM/20;
@@ -128,7 +129,7 @@ public  class DonkeYGame implements Runnable {
                         gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
                         && worldTable[player.posX][player.posY].type!=LADDER){
                     gameTable[player.posX][player.posY] = vuoto;
-                    running = false;
+                    vinto = 1;
                     Graphics.getInstance().reset();
                 }
         }
@@ -195,7 +196,7 @@ public  class DonkeYGame implements Runnable {
 
     public void checkWin(){
         if (player.posX == 38 && player.posY==11){
-            running = false;
+            vinto = 2;
         }
     }
 
@@ -213,7 +214,7 @@ public  class DonkeYGame implements Runnable {
                 contatore=0;
             generaBarili(contatore);
             contatore++;
-            //checkDeath();
+            checkDeath();
             checkWin();
             for (int i = 0; i < barili.size(); i++) {
                 barili.get(i).muoviBarile(i);
