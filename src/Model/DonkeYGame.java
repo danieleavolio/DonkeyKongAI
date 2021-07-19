@@ -135,13 +135,16 @@ public  class DonkeYGame implements Runnable {
             //SE NON SONO AI BORDI
             if (player.posX+1 <= gameTable.length & player.posX-1 >= 0 &&player.posY+1 <= gameTable.length & player.posY-1 >= 0  )
                 //SE HO UN BARILE A DESTRA O SINISTRA O SU O GIU E NON SONO SU UNA SCALA ALTRIMENTI SAREBBE MORTE CERTA, RICOMINCIA
-                if ((gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
-                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
-                        /*&& (worldTable[player.posX][player.posY].type!=LADDER && player.posY != barili.get(i).posY-1)*/){
+                //evitare di morire wireless
+                if (player.posX == barili.get(i).posX && player.posY == barili.get(i).posY) {
                     gameTable[player.posX][player.posY] = vuoto;
                     vinto = 1;
                     Graphics.getInstance().reset();
                 }
+                /*if ((gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
+                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
+                        *//*&& (worldTable[player.posX][player.posY].type!=LADDER && player.posY != barili.get(i).posY-1)*//*)*/
+
         }
     }
 
