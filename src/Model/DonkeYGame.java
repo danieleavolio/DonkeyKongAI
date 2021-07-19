@@ -34,6 +34,8 @@ public  class DonkeYGame implements Runnable {
     public int vinto = 0;
     public ArrayList<Barile> barili = new ArrayList<Barile>();
     public Random random;
+    public LogicProgram logicProgram;
+    public String encoding = "encoding/dio.txt";
 
     public final static int dimension = Main.DIM/20;
 
@@ -111,6 +113,8 @@ public  class DonkeYGame implements Runnable {
     private DonkeYGame() {
         makeTable();
         random = new Random();
+        logicProgram = new LogicProgram(encoding);
+        logicProgram.addFatti(gameTable);
     }
 
     public void generaBarili(int contatore){
@@ -281,8 +285,6 @@ public  class DonkeYGame implements Runnable {
                 player.isJumping = false;
             }
 
-
-
             for (int i = 0; i < gameTable.length; i++) {
                 for (int j = 0; j < gameTable.length; j++) {
                     if (player.posY - 1 >= 0) {
@@ -294,7 +296,11 @@ public  class DonkeYGame implements Runnable {
             MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
-
+            //aggiungere i fatti
+            //logicProgram.addFatti(gameTable);
+            //System.out.println(logicProgram.getAs());
+            handleMovimento(logicProgram.getAs());
+            System.out.println(logicProgram.getAs());
         }
         /*if (!running){
             new java.util.Timer().schedule(
@@ -309,5 +315,12 @@ public  class DonkeYGame implements Runnable {
         }*/
     }
 
+    public void handleMovimento(String movimento){
+        switch (movimento){
+            case "[[direzione(\"des\")]]":
+                player.moveRight();
+                break;
+        }
+    }
 
 }

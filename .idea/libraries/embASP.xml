@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="embASP">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/lib/embASP.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/embASP.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

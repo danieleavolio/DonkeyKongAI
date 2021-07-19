@@ -7,15 +7,18 @@ import it.unical.mat.embasp.languages.Param;
 public class WrapperBarile {
 
 
-    @Param(1)
+    @Param(0)
     public int colonna;
 
-    @Param(2)
+    @Param(1)
     public int riga;
 
-    public WrapperBarile(int riga, int colonna) {
-        this.riga = riga;
+    public WrapperBarile() {
+    }
+
+    public WrapperBarile(int colonna, int riga) {
         this.colonna = colonna;
+        this.riga = riga;
     }
 
     public int getRiga() {

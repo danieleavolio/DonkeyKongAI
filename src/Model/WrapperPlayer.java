@@ -7,11 +7,14 @@ import it.unical.mat.embasp.languages.Param;
 public class WrapperPlayer {
 
 
-    @Param(1)
+    @Param(0)
     public int colonna;
 
-    @Param(2)
+    @Param(1)
     public int riga;
+
+    public WrapperPlayer() {
+    }
 
     public WrapperPlayer(int colonna, int riga) {
         this.colonna = colonna;
