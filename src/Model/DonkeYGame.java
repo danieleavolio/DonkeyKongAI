@@ -114,7 +114,6 @@ public  class DonkeYGame implements Runnable {
         makeTable();
         random = new Random();
         logicProgram = new LogicProgram(encoding);
-        logicProgram.addFatti(gameTable);
     }
 
     public void generaBarili(int contatore){
@@ -250,12 +249,18 @@ public  class DonkeYGame implements Runnable {
     @Override
     public void run() {
         int contatore = 0;
-        while(running){
+        while(vinto!=1){
             try {
-                Thread.sleep(60);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            //aggiungere i fatti
+            logicProgram.addFatti(player,barili);
+            //gestione del movimento
+            handleMovimento();
+
+
             if (contatore>=50)
                 contatore=0;
             generaBarili(contatore);
@@ -296,11 +301,7 @@ public  class DonkeYGame implements Runnable {
             MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
-            //aggiungere i fatti
-            //logicProgram.addFatti(gameTable);
-            //System.out.println(logicProgram.getAs());
-            handleMovimento(logicProgram.getAs());
-            System.out.println(logicProgram.getAs());
+
         }
         /*if (!running){
             new java.util.Timer().schedule(
@@ -315,12 +316,38 @@ public  class DonkeYGame implements Runnable {
         }*/
     }
 
-    public void handleMovimento(String movimento){
-        switch (movimento){
-            case "[[direzione(\"des\")]]":
+    public void handleMovimento(){
+
+        Cammina cammina = logicProgram.getAnswerSet();
+        //Gestione del movimento totale del personaggio
+        if (cammina!=null) {
+            System.out.println("Stampa per capire la situazione:\n" +
+                    "Posizione player: " + player.getPosX() + " - " + player.getPosY() + "\n" +
+                    "Posizione dell'IA: " + cammina.getColonna() + " - " + cammina.getRiga() + " - salto: " + cammina.getSalta());
+
+            if (cammina.getSalta() == 1) {
+                //NON RIESCE A PRENDERE L'INPUT IN TEMPO DATI IL TEMPO DI ATTESA
+                player.moveUp();
+                player.moveUp();
+                player.moveUp();
+
+
+            }
+            else if (player.getPosX() < cammina.getColonna()) {
                 player.moveRight();
-                break;
+            }
+            else if (player.getPosX() > cammina.getColonna()) {
+                player.moveLeft();
+            }
+           /* else if (player.getPosY() < cammina.getRiga()) {
+                player.moveDown();
+            }*/
+            else if (player.getPosY() > cammina.getRiga()) {
+                player.moveUp();
+            }
         }
     }
+
+
 
 }

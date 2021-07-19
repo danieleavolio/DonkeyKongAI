@@ -2,6 +2,7 @@ riga(11..36).
 colonne(1..38).
 
 %TANTE ISTANZE DI SCALA (UNA PER OGNI PIANO E SONO "COSTANTI")
+
 %PIANO TERRA
 scala(30,36).
 scala(30,35).
@@ -10,15 +11,43 @@ scala(30,33).
 scala(30,32).
 
 %PRIMO PIANO
-scala(10,31).
+scala(12,31).
+scala(12,30).
+scala(12,29).
+scala(12,28).
+scala(12,27).
+scala(12,26).
+
+%SECONDO PIANO
+scala(24,25).
+scala(24,24).
+scala(24,23).
+scala(24,22).
+scala(24,21).
+
+%TERZO PIANO
+scala(5,20).
+scala(5,19).
+scala(5,18).
+scala(5,17).
+scala(5,16).
+
+%QUARTO PIANO
+scala(22,15).
+scala(22,14).
+scala(22,13).
+scala(22,12).
+
+%QUINTO PIANO
+scala(38,11).
 
 %MI SERVE SAPERE DOVE PARTO
-start(10,30).
+%start(37,11).
 
 % MI SERVONO LE POSIZIONI DEI BARILI
-barile(2,36).
-barile(5,30).
-barile(5,30).
+%barile(2,36).
+%barile(5,30).
+%barile(5,30).
 
 %salta se ci sono barili
 salta(0).
@@ -75,12 +104,3 @@ pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
 
 %se provi a non saltare quando c"è un barile --> paghi
 :~ start(C,R), barile(C1,R), pos_critica(X), X=1, cammina(_,_,S), S=0. [1@2]
-
-
-
-
-%SE SEI SULLA SCALA, ALLORA SALI TUTTA LA SCALA FINO ALLA RIGA SUCCESSIVA
-% DA MODIFICARE SE CI SONO BARILI CHE SCENDONO LE SCALE
-%:- start(C,R), scala(C1,R1), cammina(C2,R2,_), obiettivo(Z), Z=0, C=C1, R2!=R-1. 
-
-% QUANDO LA RIGA COINCIDE CON LA SCALA, FAI QUALCOSA

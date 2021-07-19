@@ -16,6 +16,7 @@ public abstract class GameObj {
                 DonkeYGame.getInstance().gameTable[posX][posY-1].type != DonkeYGame.FERRO) */
         if (posY -1 >= 0 && DonkeYGame.getInstance().worldTable[posX][posY-1].type!=DonkeYGame.FERRO){
             posY--;
+            controlloMortePreciso(DonkeYGame.getInstance().gameTable);
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX, posY+1);
         }
@@ -26,6 +27,7 @@ public abstract class GameObj {
     public void moveDown() {
         if (posY + 1 < DonkeYGame.getInstance().dimension-2) {
             posY++;
+            controlloMortePreciso(DonkeYGame.getInstance().gameTable);
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX, posY - 1);
         }
@@ -37,6 +39,7 @@ public abstract class GameObj {
         if (posX - 1 >= 0) {
             direzione=-1;
             posX--;
+            controlloMortePreciso(DonkeYGame.getInstance().gameTable);
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX + 1, posY);
         }
@@ -48,11 +51,18 @@ public abstract class GameObj {
         if (posX + 1 < DonkeYGame.getInstance().dimension-1) {
             direzione=1;
             posX++;
+            //Controllo per verificare che il barile non si scambi con mario e che mario muoia
+            controlloMortePreciso(DonkeYGame.getInstance().gameTable);
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swap(posX - 1, posY);
         }
     }
 
+    public void controlloMortePreciso(GameObj[][] table){
+        if (table[posX][posY].type == DonkeYGame.BARREL){
+            DonkeYGame.getInstance().vinto = 1;
+        }
+    }
     public int getPosX() {
         return posX;
     }
