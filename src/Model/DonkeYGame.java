@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 
 public  class DonkeYGame implements Runnable {
@@ -32,6 +33,7 @@ public  class DonkeYGame implements Runnable {
     public Scala scala;
     public int vinto = 0;
     public ArrayList<Barile> barili = new ArrayList<Barile>();
+    public Random random;
 
     public final static int dimension = Main.DIM/20;
 
@@ -108,14 +110,23 @@ public  class DonkeYGame implements Runnable {
     }
     private DonkeYGame() {
         makeTable();
+        random = new Random();
     }
 
     public void generaBarili(int contatore){
-
+        int leftOrRight = random.nextInt(2);
+        System.out.println(leftOrRight);
         if (contatore == 0) {
-            Barile barilone = new Barile(34,10);
-            barili.add(barilone);
-            gameTable[34][10] = barilone;
+            if (leftOrRight==0) {
+                Barile barilone = new Barile(34, 10);
+                barili.add(barilone);
+                gameTable[34][10] = barilone;
+            }
+            else {
+                Barile barilone = new Barile(10, 10);
+                barili.add(barilone);
+                gameTable[10][10] = barilone;
+            }
         }
     }
 
