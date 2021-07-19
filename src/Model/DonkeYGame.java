@@ -13,6 +13,7 @@ import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
+import java.util.concurrent.ThreadLocalRandom;
 
 public  class DonkeYGame implements Runnable {
 
@@ -35,7 +36,7 @@ public  class DonkeYGame implements Runnable {
     public ArrayList<Barile> barili = new ArrayList<Barile>();
     public Random random;
     public LogicProgram logicProgram;
-    public String encoding = "encoding/dio.txt";
+    public String encoding = "encoding/dio2.txt";
 
     public final static int dimension = Main.DIM/20;
 
@@ -251,7 +252,7 @@ public  class DonkeYGame implements Runnable {
         int contatore = 0;
         while(vinto!=1){
             try {
-                Thread.sleep(50);
+                Thread.sleep(40);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -265,7 +266,6 @@ public  class DonkeYGame implements Runnable {
                 contatore=0;
             generaBarili(contatore);
             contatore++;
-            checkDeath();
             checkWin();
             for (int i = 0; i < barili.size(); i++) {
                 if (!barili.get(i).isOnLadder)
@@ -282,7 +282,9 @@ public  class DonkeYGame implements Runnable {
                     player.moveDown();
                 }
             }
-            if (player.isJumping ){
+            checkDeath();
+
+            if (player.isJumping){
                 player.moveUp();
                 swap(player.posX,player.posY+1);
             }
@@ -298,7 +300,7 @@ public  class DonkeYGame implements Runnable {
                     }
                 }
             }
-            MovementController.getInstance().update();
+            //MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
 
@@ -317,7 +319,6 @@ public  class DonkeYGame implements Runnable {
     }
 
     public void handleMovimento(){
-
         Cammina cammina = logicProgram.getAnswerSet();
         //Gestione del movimento totale del personaggio
         if (cammina!=null) {
@@ -330,8 +331,6 @@ public  class DonkeYGame implements Runnable {
                 player.moveUp();
                 player.moveUp();
                 player.moveUp();
-
-
             }
             else if (player.getPosX() < cammina.getColonna()) {
                 player.moveRight();

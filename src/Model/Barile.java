@@ -39,9 +39,9 @@ public class Barile extends GameObj {
             posX--;
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             //se a sinistra c'è mario, ammazzallo
-            if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+            /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
                 DonkeYGame.getInstance().vinto = 1;
-            }
+            }*/
             DonkeYGame.getInstance().swapBarile(posX + 1, posY, index);
         }
     }
@@ -50,9 +50,9 @@ public class Barile extends GameObj {
         if (posX + 1 < DonkeYGame.getInstance().dimension-1) {
             posX++;
             //se a destra c'è mario, ammazzallo
-            if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+            /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
                 DonkeYGame.getInstance().vinto = 1;
-            }
+            }*/
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             DonkeYGame.getInstance().swapBarile(posX - 1, posY, index);
         }
@@ -63,9 +63,9 @@ public class Barile extends GameObj {
             posY++;
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             //se sotto c'è mario, ammazzallo
-            if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+            /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
                 DonkeYGame.getInstance().vinto = 1;
-            }
+            }*/
             DonkeYGame.getInstance().swapBarile(posX, posY - 1,index);
         }
     }

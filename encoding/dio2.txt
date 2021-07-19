@@ -42,8 +42,8 @@ scala(22,12).
 scala(38,11).
 
 %MI SERVE SAPERE DOVE PARTO
-%start(30,31).
-
+%start(23,24).
+%barile(24,22).
 
 % MI SERVONO LE POSIZIONI DEI BARILI
 %barile(2,36).
@@ -69,10 +69,12 @@ obiettivo(Z) :- start(C,R), scala(C1,R), Z=C-C1.
 % SERVE PER VEDERE SE CAMMINA E START SONO UGUALI ( E DEVONO ESSERLO )
 :- start(C,R), cammina(C1,R1,_), R!=R1, obiettivo(Z), Z!=0.
 
+
+%TRASFORMARE TUTTO IN WEAK
 %ANDARE A DESTRA
-:- start(C,R), obiettivo(Z), cammina(C1,R1,_), Z<0, C1 != C+1.
+%:- start(C,R), obiettivo(Z), cammina(C1,R1,_), Z<0, C1 != C+1.
 %ANDARE A SINISTRA
-:- start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1.
+%:- start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1.
 
 %RICAVA LA DIFFERENZA TRA LA POSIZIONE DEL GIOCATORE E IL BARILE - OK -
 pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
@@ -98,6 +100,14 @@ pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
 :- #count{C,R,S : cammina(C,R,S)} != 1.
 
 
+
+%Se lobiettivo è a destra e non ci vai, paghi
+:~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z<0, C1 != C+1. [1@1]
+
+%Se l obiettivo è a sinistra e non ci vai, paghi
+:~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1. [1@1]
+
+
 % se non cè un barile nella stessa cosa, paga
 %pare funzionare il weak
 %se sei una riga e il barile non si trova sulla stessa riga e saltio saltare, allora paghi
@@ -108,12 +118,15 @@ pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
 
 %se sei su una scala e scegli una posizione che non è sopra, paghi.
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, R1!=R-1. [1@3]
-
 % se sei su una scala e scegli una posizione come destra e sinistra, paghi.
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, C!=C1. [1@3]
 
 %se mentre stai salendo una scala cè un barile, e sali, ti devono ammazzare.
-:~start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C,R2),R2<R, C1!=C, R1!=R+1. [1@4]
+:~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C,R2),R2<R, C1!=C, R1!=R+1. [1@4]
+
 
 %se l obiettivo è 1 e ti avvicini ad una scala invece di aspettare, paghi
-:~ start(C,R), obiettivo(Z), cammina(C1,_,_), Z=1, barile(C2,R2), C!=C1, R2<R. [1@4]
+%FUNZIONA BENE MANNAIA MENOMALE CHE FUNZIONA
+:~ start(C,R), obiettivo(Z), cammina(C1,_,_), Z=-1, barile(C2,R2), R2<R, C2=C+1, C1!=C. [2@4]
+:~ start(C,R), obiettivo(Z), cammina(C1,_,_), Z=1, barile(C2,R2), R2<R, C2=C-1, C1!=C. [2@4]
+
