@@ -115,7 +115,6 @@ public  class DonkeYGame implements Runnable {
 
     public void generaBarili(int contatore){
         int leftOrRight = random.nextInt(2);
-        System.out.println(leftOrRight);
         if (contatore == 0) {
             if (leftOrRight==0) {
                 Barile barilone = new Barile(34, 10);
@@ -138,13 +137,15 @@ public  class DonkeYGame implements Runnable {
                 //SE HO UN BARILE A DESTRA O SINISTRA O SU O GIU E NON SONO SU UNA SCALA ALTRIMENTI SAREBBE MORTE CERTA, RICOMINCIA
                 if ((gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
                         gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
-                        && worldTable[player.posX][player.posY].type!=LADDER){
+                        /*&& (worldTable[player.posX][player.posY].type!=LADDER && player.posY != barili.get(i).posY-1)*/){
                     gameTable[player.posX][player.posY] = vuoto;
                     vinto = 1;
                     Graphics.getInstance().reset();
                 }
         }
     }
+
+    //lasciare perdere sta cosa funziona e basta
     public void swap(int oldX, int oldY){
 
         switch(player.oldObj.type){
@@ -183,7 +184,7 @@ public  class DonkeYGame implements Runnable {
 
     }
 
-
+    //se sotto i barili non c'è ferro o scala, cadi verticalmente
     public void gravitaBarili() {
         for (int i = 0; i < barili.size(); i++) {
             if (worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != FERRO && worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != LADDER) {
@@ -195,7 +196,7 @@ public  class DonkeYGame implements Runnable {
             }
         }
     }
-    
+    //quando un barile arriva all'ultimo bordo sinistro sul livello 1 allora dsitruggilo
     public synchronized void distruzioneBarili(){
         for (int i = 0; i < barili.size(); i++) {
             if (barili.get(i).posX-2<=0 && barili.get(i).posY>=34){
@@ -203,6 +204,34 @@ public  class DonkeYGame implements Runnable {
                 barili.remove(i);
             }
         }
+    }
+
+    //fa muovere i barili sulle scale
+    public void bariliSulleScale(){
+        int scelta = 0;
+        for (int i = 0; i < barili.size(); i++) {
+            //se la posizione verticale + 1 è una scala per il barile
+            if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type == LADDER){
+                //random tra 0 e 1 per capire se scendere le scale o no
+                scelta = random.nextInt(2);
+                //se il barile non è sulla scala quando sotto ho una scala
+                if (!barili.get(i).isOnLadder) {
+                    if (scelta == 0)
+                        barili.get(i).isOnLadder = true;
+                }
+                //quando sono sulla scala, se sotto ho una scala scendo
+                //quando sono sulla scala e sotto non ho una scala. smetti di essere li  e muoviti
+                if (barili.get(i).isOnLadder){
+                    if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type==LADDER){
+                        barili.get(i).moveDownBarrel(i);
+                    }
+                    if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type!=LADDER){
+                        barili.get(i).isOnLadder = false;
+                    }
+                }
+            }
+        }
+
     }
 
     public void checkWin(){
@@ -220,7 +249,6 @@ public  class DonkeYGame implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(player.posX + " -- " + player.posY);
             if (contatore>=50)
                 contatore=0;
             generaBarili(contatore);
@@ -228,10 +256,13 @@ public  class DonkeYGame implements Runnable {
             checkDeath();
             checkWin();
             for (int i = 0; i < barili.size(); i++) {
-                barili.get(i).muoviBarile(i);
+                if (!barili.get(i).isOnLadder)
+                    barili.get(i).muoviBarile(i);
             }
             //GRAVITA' BARILI
             gravitaBarili();
+            //PROVA BARILI SULLE SCALE
+            bariliSulleScale();
             //PLAYER JUMP
 
             if (!player.isJumping){
