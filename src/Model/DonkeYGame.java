@@ -275,7 +275,6 @@ public  class DonkeYGame implements Runnable {
             }
             if (player.isJumping ){
                 player.moveUp();
-                player.moveUp();
                 swap(player.posX,player.posY+1);
             }
             if (player.jumpingPos - 1 > player.posY){
