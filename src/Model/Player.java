@@ -17,7 +17,7 @@ public class Player extends GameObj {
     }
 
     public void jump() {
-        if (DonkeYGame.getInstance().worldTable[posX][posY + 1].type != DonkeYGame.VUOTO && !isJumping || posY + 1 >= DonkeYGame.dimension - 2) {
+        if (DonkeYGame.getInstance().worldTable[posX][posY + 1].type != DonkeYGame.VUOTO && !isJumping || posY + 1 >= DonkeYGame.dimension - 1) {
             isJumping = true;
             jumpingPos = posY;
             moveUp();

@@ -23,7 +23,6 @@ public  class DonkeYGame implements Runnable {
     public GameObj[][] worldTable;
     public final static int PLAYER = 1;
     public final static int BARREL = 2;
-    public final static int PRINCESS = 3;
     public final static int FERRO = 4;
     public final static int LADDER = 5;
     public final static int VUOTO = 6;
@@ -58,9 +57,8 @@ public  class DonkeYGame implements Runnable {
 
 
         // GENERAZIONE MAPPA A MANO CHE DA FILE MI DAVA ERRORI
-
         //generazione dei ferri
-        //ULTIO PIANO
+        //ULTIMO PIANO
         for (int i = 16; i < gameTable.length; i++)
             worldTable[i][12] = ferro;
 
@@ -256,6 +254,12 @@ public  class DonkeYGame implements Runnable {
             }
             //checkDeath();
 
+            if (!player.isJumping){
+                if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
+                    player.moveDown();
+                }
+            }
+
             //facciamo muovere i barili prima
             for (int i = 0; i < barili.size(); i++) {
                 if (!barili.get(i).isOnLadder)
@@ -278,16 +282,13 @@ public  class DonkeYGame implements Runnable {
             contatore++;
             checkWin();
 
-            if (!player.isJumping){
-                if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
-                    player.moveDown();
-                }
-            }
+
 
             if (player.isJumping){
                 player.moveUp();
                 swap(player.posX,player.posY+1);
             }
+
             if (player.jumpingPos - 1 > player.posY){
                 player.isJumping = false;
             }
@@ -329,22 +330,23 @@ public  class DonkeYGame implements Runnable {
             if (cammina.getSalta() == 1) {
                 //NON RIESCE A PRENDERE L'INPUT IN TEMPO DATI IL TEMPO DI ATTESA
                 player.jump();
-
             }
-            if (player.getPosX() < cammina.getColonna()) {
-                player.moveRight();
+             if (player.getPosX() < cammina.getColonna()) {
+                 if (!player.isJumping)
+                    player.moveRight();
             }
-            if (player.getPosX() > cammina.getColonna()) {
-                player.moveLeft();
+             if (player.getPosX() > cammina.getColonna()) {
+                 if (!player.isJumping)
+                     player.moveLeft();
             }
-
-            else if (player.getPosY() < cammina.getRiga()) {
+             if (player.getPosY() < cammina.getRiga()) {
                 if(!player.isOnLadder)
                     player.moveDown();
             }
-            if (player.getPosY() > cammina.getRiga()) {
-                if (worldTable[player.getPosX()][player.getPosY()].type==LADDER)
+             if (player.getPosY() > cammina.getRiga()) {
+                if (worldTable[player.getPosX()][player.getPosY()].type==LADDER) {
                     player.moveUp();
+                }
             }
         }
     }

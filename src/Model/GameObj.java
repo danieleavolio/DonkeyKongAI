@@ -8,12 +8,10 @@ public abstract class GameObj {
     public int posY;
 
     public GameObj oldObj;
-    public Vuoto vuoto;
     public int direzione = 1;
     public boolean isOnLadder = false;
     public void moveUp() {
-        /*if (posY - 1 >= 0 && DonkeYGame.getInstance().gameTable[posX][posY+1].type != DonkeYGame.FERRO &&
-                DonkeYGame.getInstance().gameTable[posX][posY-1].type != DonkeYGame.FERRO) */
+
         if (posY -1 >= 0 && DonkeYGame.getInstance().worldTable[posX][posY-1].type!=DonkeYGame.FERRO){
             posY--;
             controlloMortePreciso(DonkeYGame.getInstance().gameTable);

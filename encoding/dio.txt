@@ -38,8 +38,12 @@ scala(22,14).
 scala(22,13).
 scala(22,12).
 
+%queste scale aggiuntive servono a non rompere tutto
 %QUINTO PIANO
 scala(38,11).
+scala(38,10).
+scala(38,9).
+scala(38,8).
 
 %MI SERVE SAPERE DOVE PARTO
 %start(29,36).
