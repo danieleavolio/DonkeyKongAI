@@ -36,7 +36,7 @@ public  class DonkeYGame implements Runnable {
     public ArrayList<Barile> barili = new ArrayList<Barile>();
     public Random random;
     public LogicProgram logicProgram;
-    public String encoding = "encoding/dio2.txt";
+    public String encoding = "encoding/dio.txt";
 
     public final static int dimension = Main.DIM/20;
 
@@ -118,18 +118,10 @@ public  class DonkeYGame implements Runnable {
     }
 
     public void generaBarili(int contatore){
-        int leftOrRight = random.nextInt(2);
         if (contatore == 0) {
-            if (leftOrRight==0) {
-                Barile barilone = new Barile(34, 10);
-                barili.add(barilone);
-                gameTable[34][10] = barilone;
-            }
-            else {
-                Barile barilone = new Barile(10, 10);
-                barili.add(barilone);
-                gameTable[10][10] = barilone;
-            }
+            Barile barilone = new Barile(34, 10);
+            barili.add(barilone);
+            gameTable[34][10] = barilone;
         }
     }
 
@@ -252,21 +244,13 @@ public  class DonkeYGame implements Runnable {
         int contatore = 0;
         while(vinto!=1){
             try {
-                Thread.sleep(40);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //aggiungere i fatti
-            logicProgram.addFatti(player,barili);
-            //gestione del movimento
-            handleMovimento();
+            //checkDeath();
 
-
-            if (contatore>=50)
-                contatore=0;
-            generaBarili(contatore);
-            contatore++;
-            checkWin();
+            //facciamo muovere i barili prima
             for (int i = 0; i < barili.size(); i++) {
                 if (!barili.get(i).isOnLadder)
                     barili.get(i).muoviBarile(i);
@@ -276,13 +260,26 @@ public  class DonkeYGame implements Runnable {
             //PROVA BARILI SULLE SCALE
             bariliSulleScale();
             //PLAYER JUMP
+            //aggiungere i fatti
+            logicProgram.addFatti(player, barili);
+            //gestione del movimento
+            handleMovimento();
+            System.out.println("Mi sono mosso qui: " + player.posX + " - " + player.posY);
+
+
+            if (contatore>=30)
+                contatore=0;
+            generaBarili(contatore);
+            contatore++;
+            checkWin();
+
+
 
             if (!player.isJumping){
                 if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
                     player.moveDown();
                 }
             }
-            checkDeath();
 
             if (player.isJumping){
                 player.moveUp();
@@ -303,6 +300,7 @@ public  class DonkeYGame implements Runnable {
             //MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
+            System.out.println(" --- PROSSIMO TURNO --- \n");
 
         }
         /*if (!running){
@@ -322,27 +320,28 @@ public  class DonkeYGame implements Runnable {
         Cammina cammina = logicProgram.getAnswerSet();
         //Gestione del movimento totale del personaggio
         if (cammina!=null) {
-            System.out.println("Stampa per capire la situazione:\n" +
-                    "Posizione player: " + player.getPosX() + " - " + player.getPosY() + "\n" +
-                    "Posizione dell'IA: " + cammina.getColonna() + " - " + cammina.getRiga() + " - salto: " + cammina.getSalta());
+            System.out.println("Posizione player: " + player.getPosX() + " - " + player.getPosY() + "\n" +
+                    "IA: "+ cammina.getColonna() +" - "+cammina.getRiga() +" - "+ cammina.getSalta());
 
             if (cammina.getSalta() == 1) {
                 //NON RIESCE A PRENDERE L'INPUT IN TEMPO DATI IL TEMPO DI ATTESA
-                player.moveUp();
-                player.moveUp();
-                player.moveUp();
+                player.jump();
+
             }
-            else if (player.getPosX() < cammina.getColonna()) {
+            if (player.getPosX() < cammina.getColonna()) {
                 player.moveRight();
             }
-            else if (player.getPosX() > cammina.getColonna()) {
+            if (player.getPosX() > cammina.getColonna()) {
                 player.moveLeft();
             }
-           /* else if (player.getPosY() < cammina.getRiga()) {
-                player.moveDown();
-            }*/
-            else if (player.getPosY() > cammina.getRiga()) {
-                player.moveUp();
+
+            else if (player.getPosY() < cammina.getRiga()) {
+                if(!player.isOnLadder)
+                    player.moveDown();
+            }
+            if (player.getPosY() > cammina.getRiga()) {
+                if (worldTable[player.getPosX()][player.getPosY()].type==LADDER)
+                    player.moveUp();
             }
         }
     }

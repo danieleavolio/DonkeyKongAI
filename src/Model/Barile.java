@@ -32,6 +32,7 @@ public class Barile extends GameObj {
             else if (this.direzione == DESTRA)
                 moveRightBarrel(index);
         }
+        System.out.println("Posizione di sto cristo di barile: X: " + posX + " - Y: "+ posY);
     }
 
     public void moveLeftBarrel(int index) {
@@ -40,6 +41,7 @@ public class Barile extends GameObj {
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             //se a sinistra c'è mario, ammazzallo
             /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+                System.out.println("Ho stato io");
                 DonkeYGame.getInstance().vinto = 1;
             }*/
             DonkeYGame.getInstance().swapBarile(posX + 1, posY, index);
@@ -51,6 +53,8 @@ public class Barile extends GameObj {
             posX++;
             //se a destra c'è mario, ammazzallo
             /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+                System.out.println("Ho stato io");
+
                 DonkeYGame.getInstance().vinto = 1;
             }*/
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
@@ -64,6 +68,7 @@ public class Barile extends GameObj {
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];
             //se sotto c'è mario, ammazzallo
             /*if (DonkeYGame.getInstance().gameTable[posX][posY].type == DonkeYGame.PLAYER){
+                System.out.println("Ho stato io");
                 DonkeYGame.getInstance().vinto = 1;
             }*/
             DonkeYGame.getInstance().swapBarile(posX, posY - 1,index);

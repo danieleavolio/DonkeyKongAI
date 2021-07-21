@@ -26,13 +26,14 @@ public class LogicProgram {
         //dove sono le regole
         this.encodingResource = enc;
         factsFissi = new ASPInputProgram();
-        factsFissi.addFilesPath(enc);
+        factsFissi.addFilesPath(encodingResource);
+        factsVariabili = new ASPInputProgram();
         //fatti principali prima di uscire pazzi
 
         //per fargli prendere l'eseguibile
         handler = new DesktopHandler(new DLV2DesktopService("lib/dlv2.exe"));
         //per le opzioni di DLV
-        OptionDescriptor option = new OptionDescriptor("-n 0, --printonlyoptimum ");
+        OptionDescriptor option = new OptionDescriptor("--printonlyoptimum ");
         //gli diami le regole all'handler di dlv
         handler.addOption(option);
         try {
@@ -43,19 +44,16 @@ public class LogicProgram {
             e.printStackTrace();
         }
         handler.addProgram(factsFissi);
+        handler.addProgram(factsVariabili);
     }
     public void addFatti(Player player, ArrayList<Barile> bariles){
-        if (factsVariabili!=null)
-            factsVariabili.clearAll();
-
-        factsVariabili= new ASPInputProgram();
+        factsVariabili.clearAll();
         try {
             WrapperPlayer luca = new WrapperPlayer(player.getPosX(), player.getPosY());
             factsVariabili.addObjectInput(luca);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         for (Barile barile : bariles) {
             try {
                 WrapperBarile barileW = new WrapperBarile(barile.getPosX(), barile.getPosY());
@@ -64,9 +62,7 @@ public class LogicProgram {
                 e.printStackTrace();
             }
         }
-
         handler.addProgram(factsVariabili);
-
     }
 
     public Cammina getAnswerSet(){

@@ -60,6 +60,7 @@ public abstract class GameObj {
 
     public void controlloMortePreciso(GameObj[][] table){
         if (table[posX][posY].type == DonkeYGame.BARREL){
+            System.out.println(posX +" - "+posY);
             DonkeYGame.getInstance().vinto = 1;
         }
     }
