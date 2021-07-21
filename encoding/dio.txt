@@ -77,6 +77,13 @@ dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 %DISTANZA IN RIGHE DALLA VITTORIA
 %dis_vittoria(V):- start(C,R), vittoria(C1,R1), V=R-R1.
 
+%STRONG PER MOVIMENTO SINGOLARE MASSIMO DI 1
+:-cammina(C,R,_), start(C1,R1), Z=R-R1, &abs(Z;X), X > 1.
+:-cammina(C,R,_), start(C1,R1), Z=C-C1, &abs(Z;X), X > 1.
+
+%CAMMINA NON VA VERSO IL BARILE
+:- cammina(C,R,_), barile(C,R).
+
 
 %PER NON AVERE ANSWER SET VUOTI - OK -
 :- #count{C,R,S : cammina(C,R,S)} != 1.
@@ -124,7 +131,7 @@ dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C2,R2), R2<R, R1!=R+1, R-R2 <5, C2=C, C1!=C+1. [1@5]
 
 %se hai un barile sulla testa e sei su una scala e non scendi sotto, paghi
-%:~ start(C,R), obiettivo(Z), Z=0, cammina(C1,R1,_), barile(C2,R2), R2<R, C1!=C, R1!=R+1, dis_critica(X), X>=2. [1@6]
+%:~ start(C,R), obiettivo(Z), Z=0, cammina(C1,R1,_), barile(C2,R2), R2<R, C1!=C, R1!=R+1, dis_critica(X), X>=2. [1@5]
 
 
 

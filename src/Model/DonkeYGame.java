@@ -64,8 +64,6 @@ public  class DonkeYGame implements Runnable {
         for (int i = 16; i < gameTable.length; i++)
             worldTable[i][12] = ferro;
 
-       /* for (int i = 15; i < 25; i++)
-            worldTable[i][14] = ferro;*/
         //PENULTIMO PIANO
         for (int i = 2; i < gameTable.length - 15; i++)
             worldTable[i][16] = ferro;
@@ -119,9 +117,17 @@ public  class DonkeYGame implements Runnable {
 
     public void generaBarili(int contatore){
         if (contatore == 0) {
-            Barile barilone = new Barile(34, 10);
-            barili.add(barilone);
-            gameTable[34][10] = barilone;
+            int posizione = random.nextInt(2);
+            if (posizione==0) {
+                Barile barilone = new Barile(34, 10);
+                barili.add(barilone);
+                gameTable[34][10] = barilone;
+            }
+            else{
+                Barile barilone = new Barile(10, 10);
+                barili.add(barilone);
+                gameTable[10][10] = barilone;
+            }
         }
     }
 
@@ -242,9 +248,9 @@ public  class DonkeYGame implements Runnable {
     @Override
     public void run() {
         int contatore = 0;
-        while(vinto!=1){
+        while(vinto!=1 && vinto != 2){
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -266,14 +272,11 @@ public  class DonkeYGame implements Runnable {
             handleMovimento();
             System.out.println("Mi sono mosso qui: " + player.posX + " - " + player.posY);
 
-
-            if (contatore>=30)
+            if (contatore>=40)
                 contatore=0;
             generaBarili(contatore);
             contatore++;
             checkWin();
-
-
 
             if (!player.isJumping){
                 if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
@@ -297,7 +300,7 @@ public  class DonkeYGame implements Runnable {
                     }
                 }
             }
-            //MovementController.getInstance().update();
+            MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
             System.out.println(" --- PROSSIMO TURNO --- \n");
