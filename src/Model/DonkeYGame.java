@@ -252,10 +252,10 @@ public  class DonkeYGame implements Runnable {
     @Override
     public void run() {
         int contatore = 0;
-        int randomIntervallo = 0;
+        int randomIntervallo;
         while(vinto!=1 && vinto != 2){
             try {
-                Thread.sleep(90);
+                Thread.sleep(60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -278,9 +278,9 @@ public  class DonkeYGame implements Runnable {
             bariliSulleScale();
             //PLAYER JUMP
             //aggiungere i fatti
-            //logicProgram.addFatti(player, barili);
+            logicProgram.addFatti(player, barili);
             //gestione del movimento
-            //handleMovimento();
+            handleMovimento();
 
             randomIntervallo = random.nextInt(3);
 
@@ -346,7 +346,7 @@ public  class DonkeYGame implements Runnable {
                      player.moveLeft();
             }
              if (player.getPosY() < cammina.getRiga()) {
-                if(!player.isOnLadder)
+                if(player.isOnLadder)
                     player.moveDown();
             }
              if (player.getPosY() > cammina.getRiga()) {

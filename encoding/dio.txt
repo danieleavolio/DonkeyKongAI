@@ -78,8 +78,8 @@ pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
 %DISTANZA CRITICA VERTICALER
 dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 
-%DISTANZA IN RIGHE DALLA VITTORIA
-%dis_vittoria(V):- start(C,R), vittoria(C1,R1), V=R-R1.
+%distanza orizzontale dal barile quando si è in critica
+disOrCrit(X):- start(C,R), barile(C1,R1), dis_critica(D), D<=2, SOTT=C-C1, &abs(SOTT;X).
 
 %STRONG PER MOVIMENTO SINGOLARE MASSIMO DI 1
 :-cammina(C,R,_), start(C1,R1), Z=R-R1, &abs(Z;X), X > 1.
@@ -98,9 +98,6 @@ dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 %Se l obiettivo è a sinistra e non ci vai, paghi
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1. [1@1]
 
-
-%SE SEI AL PIANO DELLA VITTORIA E NON CI VAI PAGHI TUTTO
-%:~ start(C,R), dis_vittoria(V), V=1, cammina(C1,R), C1!=C+1. [1@7]
 
 
 
@@ -135,7 +132,7 @@ dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C2,R2), R2<R, R1!=R+1, R-R2 <5, C2=C, C1!=C+1. [1@5]
 
 %se hai un barile sulla testa e sei su una scala e non scendi sotto, paghi
-%:~ start(C,R), obiettivo(Z), Z=0, cammina(C1,R1,_), barile(C2,R2), R2<R, C1!=C, R1!=R+1, dis_critica(X), X>=2. [1@5]
+%:~ start(C,R), obiettivo(Z), Z=0, cammina(C1,R1,_), barile(C2,R2), R2<R, C1!=C, R1!=R+1, disOrCrit(X), X<=3. [1@6]
 
 
 
