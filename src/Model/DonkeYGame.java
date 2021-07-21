@@ -26,7 +26,8 @@ public  class DonkeYGame implements Runnable {
     public final static int FERRO = 4;
     public final static int LADDER = 5;
     public final static int VUOTO = 6;
-    public boolean running = true;
+    public boolean intervaloCambiato = true;
+    public int [] intervalli;
     public Player player;
     public Ferro ferro;
     public Vuoto vuoto;
@@ -47,6 +48,11 @@ public  class DonkeYGame implements Runnable {
         barili = new ArrayList<>();
         gameTable = new GameObj[dimension][dimension];
         worldTable = new GameObj[dimension][dimension];
+        intervalli = new int [3];
+
+        intervalli[0] = 30;
+        intervalli[1] = 50;
+        intervalli[2] = 70;
 
         for (int i = 0; i < gameTable.length; i++) {
             for (int i1 = 0; i1 < gameTable.length; i1++) {
@@ -246,9 +252,10 @@ public  class DonkeYGame implements Runnable {
     @Override
     public void run() {
         int contatore = 0;
+        int randomIntervallo = 0;
         while(vinto!=1 && vinto != 2){
             try {
-                Thread.sleep(20);
+                Thread.sleep(90);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -271,13 +278,15 @@ public  class DonkeYGame implements Runnable {
             bariliSulleScale();
             //PLAYER JUMP
             //aggiungere i fatti
-            logicProgram.addFatti(player, barili);
+            //logicProgram.addFatti(player, barili);
             //gestione del movimento
-            handleMovimento();
-            System.out.println("Mi sono mosso qui: " + player.posX + " - " + player.posY);
+            //handleMovimento();
 
-            if (contatore>=40)
+            randomIntervallo = random.nextInt(3);
+
+            if (contatore>= intervalli[randomIntervallo])
                 contatore=0;
+
             generaBarili(contatore);
             contatore++;
             checkWin();
@@ -289,7 +298,7 @@ public  class DonkeYGame implements Runnable {
                 swap(player.posX,player.posY+1);
             }
 
-            if (player.jumpingPos - 1 > player.posY){
+            if (player.jumpingPos-1 > player.posY){
                 player.isJumping = false;
             }
 
@@ -304,7 +313,6 @@ public  class DonkeYGame implements Runnable {
             MovementController.getInstance().update();
             Graphics.getInstance().repaint();
             distruzioneBarili();
-            System.out.println(" --- PROSSIMO TURNO --- \n");
 
         }
         /*if (!running){
@@ -324,8 +332,6 @@ public  class DonkeYGame implements Runnable {
         Cammina cammina = logicProgram.getAnswerSet();
         //Gestione del movimento totale del personaggio
         if (cammina!=null) {
-            System.out.println("Posizione player: " + player.getPosX() + " - " + player.getPosY() + "\n" +
-                    "IA: "+ cammina.getColonna() +" - "+cammina.getRiga() +" - "+ cammina.getSalta());
 
             if (cammina.getSalta() == 1) {
                 //NON RIESCE A PRENDERE L'INPUT IN TEMPO DATI IL TEMPO DI ATTESA

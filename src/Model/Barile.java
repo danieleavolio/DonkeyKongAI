@@ -32,7 +32,6 @@ public class Barile extends GameObj {
             else if (this.direzione == DESTRA)
                 moveRightBarrel(index);
         }
-        System.out.println("Posizione di sto cristo di barile: X: " + posX + " - Y: "+ posY);
     }
 
     public void moveLeftBarrel(int index) {
