@@ -21,7 +21,6 @@ public class Player extends GameObj {
             isJumping = true;
             jumpingPos = posY;
             moveUp();
-
         }
     }
 

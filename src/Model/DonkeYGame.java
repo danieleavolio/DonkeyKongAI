@@ -222,7 +222,7 @@ public  class DonkeYGame implements Runnable {
             //se la posizione verticale + 1 è una scala per il barile
             if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type == LADDER){
                 //random tra 0 e 1 per capire se scendere le scale o no
-                scelta = random.nextInt(2);
+                //scelta = random.nextInt(2);
                 //se il barile non è sulla scala quando sotto ho una scala
                 if (!barili.get(i).isOnLadder) {
                     if (scelta == 0)
@@ -246,6 +246,7 @@ public  class DonkeYGame implements Runnable {
     public void checkWin(){
         if (player.posX == 38 && player.posY==11){
             vinto = 2;
+            Graphics.getInstance().repaint();
         }
     }
 
@@ -281,16 +282,18 @@ public  class DonkeYGame implements Runnable {
             }
 
 
-
-            //facciamo muovere i barili prima
-            for (int i = 0; i < barili.size(); i++) {
-                if (!barili.get(i).isOnLadder)
-                    barili.get(i).muoviBarile(i);
-            }
             //GRAVITA' BARILI
             gravitaBarili();
             //PROVA BARILI SULLE SCALE
             bariliSulleScale();
+            //facciamo muovere i barili prima
+            for (int i = 0; i < barili.size(); i++) {
+                if (!barili.get(i).isOnLadder) {
+                    System.out.println("\nPosizione barile : X = " + barili.get(i).posX + " - Y = " + barili.get(i).posY + "\n");
+                    barili.get(i).muoviBarile(i);
+                }
+            }
+
             //PLAYER JUMP
             //aggiungere i fatti
             logicProgram.addFatti(player, barili);
@@ -334,6 +337,9 @@ public  class DonkeYGame implements Runnable {
 
     public void handleMovimento(){
         Cammina cammina = logicProgram.getAnswerSet();
+        System.out.println("\nPosizione del player : X = " + player.posX + " - Y = " + player.posY + "\n");
+        System.out.println("Risposta AnswerSet : X = " + cammina.getColonna() + " - Y = " + cammina.getRiga() +  " SALTO : " + cammina.getSalta() + "\n");
+
         //Gestione del movimento totale del personaggio
         if (cammina!=null) {
 

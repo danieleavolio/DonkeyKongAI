@@ -1,5 +1,7 @@
 package Model;
 
+import View.Graphics;
+
 import java.io.IOException;
 
 public abstract class GameObj {
@@ -60,6 +62,7 @@ public abstract class GameObj {
         if (table[posX][posY].type == DonkeYGame.BARREL){
             System.out.println(posX +" - "+posY);
             DonkeYGame.getInstance().vinto = 1;
+            Graphics.getInstance().repaint();
         }
     }
     public int getPosX() {
