@@ -11,7 +11,6 @@ public abstract class GameObj {
     public int direzione = 1;
     public boolean isOnLadder = false;
     public void moveUp() {
-
         if (posY -1 >= 0 && DonkeYGame.getInstance().worldTable[posX][posY-1].type!=DonkeYGame.FERRO){
             posY--;
             controlloMortePreciso(DonkeYGame.getInstance().gameTable);
@@ -24,6 +23,7 @@ public abstract class GameObj {
 
     public void moveDown() {
         if (posY + 1 < DonkeYGame.getInstance().dimension-2) {
+
             posY++;
             controlloMortePreciso(DonkeYGame.getInstance().gameTable);
             oldObj = DonkeYGame.getInstance().gameTable[posX][posY];

@@ -99,8 +99,6 @@ disOrCrit(X):- start(C,R), barile(C1,R1), dis_critica(D), D<=2, SOTT=C-C1, &abs(
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1. [1@1]
 
 
-
-
 % se non cè un barile nella stessa cosa, paga
 %pare funzionare il weak
 %se sei una riga e il barile non si trova sulla stessa riga e saltio saltare, allora paghi

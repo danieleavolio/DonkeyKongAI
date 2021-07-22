@@ -36,7 +36,7 @@ public  class DonkeYGame implements Runnable {
     public ArrayList<Barile> barili = new ArrayList<Barile>();
     public Random random;
     public LogicProgram logicProgram;
-    public String encoding = "encoding/dio.txt";
+    public String encoding = "encoding/regoleLogiche.txt";
 
     public final static int dimension = Main.DIM/20;
 
@@ -260,12 +260,27 @@ public  class DonkeYGame implements Runnable {
                 e.printStackTrace();
             }
             //checkDeath();
+            MovementController.getInstance().update();
+            Graphics.getInstance().repaint();
+
+            if (player.isJumping){
+                player.moveUp();
+                //non penso serva
+                //swap(player.posX,player.posY+1);
+            }
 
             if (!player.isJumping){
                 if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
+                    player.jumpingPos++;
                     player.moveDown();
                 }
             }
+
+            if (player.jumpingPos > player.posY){
+                player.isJumping = false;
+            }
+
+
 
             //facciamo muovere i barili prima
             for (int i = 0; i < barili.size(); i++) {
@@ -292,16 +307,6 @@ public  class DonkeYGame implements Runnable {
             checkWin();
 
 
-
-            if (player.isJumping){
-                player.moveUp();
-                swap(player.posX,player.posY+1);
-            }
-
-            if (player.jumpingPos-1 > player.posY){
-                player.isJumping = false;
-            }
-
             for (int i = 0; i < gameTable.length; i++) {
                 for (int j = 0; j < gameTable.length; j++) {
                     if (player.posY - 1 >= 0) {
@@ -310,8 +315,7 @@ public  class DonkeYGame implements Runnable {
                     }
                 }
             }
-            MovementController.getInstance().update();
-            Graphics.getInstance().repaint();
+
             distruzioneBarili();
 
         }
@@ -338,12 +342,10 @@ public  class DonkeYGame implements Runnable {
                 player.jump();
             }
              if (player.getPosX() < cammina.getColonna()) {
-                 if (!player.isJumping)
-                    player.moveRight();
+                 player.moveRight();
             }
              if (player.getPosX() > cammina.getColonna()) {
-                 if (!player.isJumping)
-                     player.moveLeft();
+                 player.moveLeft();
             }
              if (player.getPosY() < cammina.getRiga()) {
                 if(player.isOnLadder)
