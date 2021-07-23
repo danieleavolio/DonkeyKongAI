@@ -1,6 +1,5 @@
 package Model;
 
-import Model.DonkeYGame;
 
 public class Ferro extends GameObj {
 

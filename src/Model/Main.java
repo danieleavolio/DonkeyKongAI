@@ -1,7 +1,6 @@
 package Model;
 
 import Controller.MovementController;
-import Model.DonkeYGame;
 import View.Graphics;
 
 import javax.swing.*;

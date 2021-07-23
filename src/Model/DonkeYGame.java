@@ -1,19 +1,11 @@
 package Model;
 
-import Controller.MovementController;
-import View.Graphics;
 
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.BindException;
-import java.text.BreakIterator;
+
+import View.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 public  class DonkeYGame implements Runnable {
 
@@ -26,14 +18,13 @@ public  class DonkeYGame implements Runnable {
     public final static int FERRO = 4;
     public final static int LADDER = 5;
     public final static int VUOTO = 6;
-    public boolean intervaloCambiato = true;
     public int [] intervalli;
     public Player player;
     public Ferro ferro;
     public Vuoto vuoto;
     public Scala scala;
     public int vinto = 0;
-    public ArrayList<Barile> barili = new ArrayList<Barile>();
+    public ArrayList<Barile> barili = new ArrayList<>();
     public Random random;
     public LogicProgram logicProgram;
     public int posizione = 0;
@@ -41,6 +32,9 @@ public  class DonkeYGame implements Runnable {
 
     public final static int dimension = Main.DIM/20;
 
+    /**
+     * Metodo usato per creare il mondo di gioco, chiamato nel costruttore
+     */
     public void makeTable() {
         vuoto = new Vuoto();
         player = new Player();
@@ -51,10 +45,12 @@ public  class DonkeYGame implements Runnable {
         worldTable = new GameObj[dimension][dimension];
         intervalli = new int [3];
 
+        //INTERVALLI DI SPAWN USATI
         intervalli[0] = 40;
         intervalli[2] = 50;
         intervalli[1] = 70;
 
+        //SETTAGGIO DEL MONDO DI GIOCO TUTTO A VUOTO
         for (int i = 0; i < gameTable.length; i++) {
             for (int i1 = 0; i1 < gameTable.length; i1++) {
                 gameTable[i1][i] = vuoto ;
@@ -63,8 +59,8 @@ public  class DonkeYGame implements Runnable {
         }
 
 
-        // GENERAZIONE MAPPA A MANO CHE DA FILE MI DAVA ERRORI
-        //generazione dei ferri
+        //GENERAZIONE DEL MONDO DI GIOCO
+
         //ULTIMO PIANO
         for (int i = 16; i < gameTable.length; i++)
             worldTable[i][12] = ferro;
@@ -85,7 +81,8 @@ public  class DonkeYGame implements Runnable {
         for (int i = 0; i < gameTable.length; i++)
             worldTable[i][37] = ferro;
 
-        //generazione della scala
+        //GENERAZIONE DELLE SCALE
+
         //SCALA PIANO TERRA
         for (int i = 32; i < 37; i++){
             worldTable[30][i] = scala;
@@ -108,18 +105,30 @@ public  class DonkeYGame implements Runnable {
         }
     }
 
+    /**
+     * Ritorna la classe donkey per gestire il singleton
+     * @return la classe
+     */
     public static DonkeYGame getInstance(){
         if (donkey == null){
             donkey = new DonkeYGame();
         }
         return donkey;
     }
+
+    /**
+     * Costruttore per singleton
+     */
     private DonkeYGame() {
         makeTable();
         random = new Random();
         logicProgram = new LogicProgram(encoding);
     }
 
+    /**
+     * Se il contatore arriva è 0 ( viene controllato dal thread in run ), i barili vengono spawnati random.
+     * @param contatore viene usato per spawnare i barili ad una soglia
+     */
     public void generaBarili(int contatore){
         if (contatore == 0) {
             posizione++;
@@ -136,26 +145,10 @@ public  class DonkeYGame implements Runnable {
         }
     }
 
-    public void checkDeath(){
-
-        for (int i = 0; i < barili.size(); i++) {
-            //SE NON SONO AI BORDI
-            if (player.posX+1 <= gameTable.length & player.posX-1 >= 0 &&player.posY+1 <= gameTable.length & player.posY-1 >= 0  )
-                //SE HO UN BARILE A DESTRA O SINISTRA O SU O GIU E NON SONO SU UNA SCALA ALTRIMENTI SAREBBE MORTE CERTA, RICOMINCIA
-                //evitare di morire wireless
-                if (player.posX == barili.get(i).posX && player.posY == barili.get(i).posY) {
-                    gameTable[player.posX][player.posY] = vuoto;
-                    vinto = 1;
-                    Graphics.getInstance().reset();
-                }
-                /*if ((gameTable[player.posX+1][player.posY] == barili.get(i) || gameTable[player.posX-1][player.posY] == barili.get(i) ||
-                        gameTable[player.posX][player.posY+1] == barili.get(i) || gameTable[player.posX][player.posY-1] == barili.get(i) )
-                        *//*&& (worldTable[player.posX][player.posY].type!=LADDER && player.posY != barili.get(i).posY-1)*//*)*/
-
-        }
-    }
-
-    //lasciare perdere sta cosa funziona e basta
+    /**Gestione della matrice del mondo per quanto riguarda il movimento dei barili.
+     * @param oldX è la vecchia posizione di X da cambiare
+     * @param oldY è la vecchia posizione di Y da cambiare
+     */
     public void swap(int oldX, int oldY){
 
         switch(player.oldObj.type){
@@ -175,6 +168,13 @@ public  class DonkeYGame implements Runnable {
         gameTable[player.posX][player.posY] = player;
     }
 
+
+    /** Gestione della matrice del mondo per quanto riguarda il movimento dei barili.
+     *
+     * @param oldX è la vecchia posizione di X da cambiare
+     * @param oldY è la vecchia posizione di Y da cambiare
+     * @param index l'indice del barile sul quale si vuole operare
+     */
     public void swapBarile(int oldX, int oldY, int index){
         switch(barili.get(index).oldObj.type){
             case FERRO:{
@@ -194,19 +194,8 @@ public  class DonkeYGame implements Runnable {
 
     }
 
-    //se sotto i barili non c'è ferro o scala, cadi verticalmente
-    public void gravitaBarili() {
-        for (int i = 0; i < barili.size(); i++) {
-            if (worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != FERRO && worldTable[barili.get(i).posX][barili.get(i).posY + 1].type != LADDER) {
-                barili.get(i).falling = true;
-                barili.get(i).moveDownBarrel(i);
-            }
-            else {
-                barili.get(i).falling = false;
-            }
-        }
-    }
-    //quando un barile arriva all'ultimo bordo sinistro sul livello 1 allora dsitruggilo
+
+    /**QUANDO UN BARILE ARRIVA ALL'ULTIMO LIVELLO, VIENE DISTRUTTO QUANDO ARRIVA ALLA PARTE DI SINISTRA*/
     public synchronized void distruzioneBarili(){
         for (int i = 0; i < barili.size(); i++) {
             if (barili.get(i).posX-2<=0 && barili.get(i).posY>=34){
@@ -216,34 +205,8 @@ public  class DonkeYGame implements Runnable {
         }
     }
 
-    //fa muovere i barili sulle scale
-    public void bariliSulleScale(){
-        int scelta = random.nextInt(2);
-        for (int i = 0; i < barili.size(); i++) {
-            //se la posizione verticale + 1 è una scala per il barile
-            if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type == LADDER){
-                //random tra 0 e 1 per capire se scendere le scale o no
-                //scelta = random.nextInt(2);
-                //se il barile non è sulla scala quando sotto ho una scala
-                if (!barili.get(i).isOnLadder) {
-                    if (scelta == 0)
-                        barili.get(i).isOnLadder = true;
-                }
-                //quando sono sulla scala, se sotto ho una scala scendo
-                //quando sono sulla scala e sotto non ho una scala. smetti di essere li  e muoviti
-                if (barili.get(i).isOnLadder){
-                    if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type==LADDER){
-                        barili.get(i).moveDownBarrel(i);
-                    }
-                    if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type!=LADDER){
-                        barili.get(i).isOnLadder = false;
-                    }
-                }
-            }
-        }
 
-    }
-
+    /**Se il player arriva alla fine, vince*/
     public void checkWin(){
         if (player.posX == 38 && player.posY==11){
             vinto = 2;
@@ -253,24 +216,29 @@ public  class DonkeYGame implements Runnable {
 
     @Override
     public void run() {
+        //CONTATORE: SPAWN DEI BARILI AL RAGGIUNGIMETNO DI UNA SOGLIA
+        //RANDOM INTERVALLO: VIENE SCELTO UN INTERVALLO RANDOM DI SPAWND DEI BARILI
         int contatore = 0;
         int randomIntervallo;
+        //SE SI VINCE O SI MUORE, SI TERMINA L'ESECUZIONE DEL THREAD
         while(vinto!=1 && vinto != 2){
             try {
-                Thread.sleep(10);
+                Thread.sleep(60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //checkDeath();
-            MovementController.getInstance().update();
+
+            //COMANDI DA TASTIERA
+            //MovementController.getInstance().update();
+            //DISEGNO DELLA GRAFICA
             Graphics.getInstance().repaint();
 
+            //SE IL GIOCATORE SALTA, SI SPOSTA DI 1 IN ALTO
             if (player.isJumping){
                 player.moveUp();
-                //non penso serva
-                //swap(player.posX,player.posY+1);
             }
 
+            //QUANDO IL PLAYER NON E' SU UNA SCALA, VIENE COLPITO DALLA GRAVITA
             if (!player.isJumping){
                 if (worldTable[player.posX][player.posY+1].type != FERRO && worldTable[player.posX][player.posY+1].type != LADDER) {
                     player.jumpingPos++;
@@ -278,19 +246,15 @@ public  class DonkeYGame implements Runnable {
                 }
             }
 
+            //QUADNO IL PLAYER ARRIVA AD UNA CERTA DISTANZA DALLA POSIZIONE DEL SALTO, SMETTE DI SALTARE
             if (player.jumpingPos > player.posY){
                 player.isJumping = false;
             }
 
-            //facciamo muovere i barili prima
+            //GESTIONE DEL TOTALE MOVIMENTO DEI BARILI
+            //BRUTTA MA NECESSARIA PER IL FUNZIONAMENTO CORRETTO SENZA ERRORI NON VOLUTI
             for (int i = 0; i < barili.size(); i++) {
-
-                System.out.println("\nPosizione barile : X = " + barili.get(i).posX + " - Y = " + barili.get(i).posY + "\n");
-                System.out.println(barili.get(i).isOnLadder);
                 int scelta = random.nextInt(2);
-                System.out.println(scelta);
-
-
                 if (worldTable[barili.get(i).posX][barili.get(i).posY+1].type==FERRO) {
                     barili.get(i).falling = false;
                     barili.get(i).muoviBarile(i);
@@ -320,26 +284,24 @@ public  class DonkeYGame implements Runnable {
                         barili.get(i).falling = true;
                         barili.get(i).moveDownBarrel(i);
                     }
-
                 }
 
-
-            //PLAYER JUMP
-            //aggiungere i fatti
+            //AGGIUNZIONE DEI FATTI
             logicProgram.addFatti(player, barili);
-            //gestione del movimento
+            //FUNZIONE PER GESTIRE IL MOVIMENTO IN BASE ALL'AS
             handleMovimento();
 
+            //INTERVALLO RANDOM DI SPAWN DEI BARILI
             randomIntervallo = random.nextInt(2);
-
             if (contatore>= intervalli[randomIntervallo])
                 contatore=0;
-
             generaBarili(contatore);
             contatore++;
+
+            //CONTROLLO VITTORIA
             checkWin();
 
-
+            //GESTIONE DELLE SCALE
             for (int i = 0; i < gameTable.length; i++) {
                 for (int j = 0; j < gameTable.length; j++) {
                     if (player.posY - 1 >= 0) {
@@ -349,25 +311,19 @@ public  class DonkeYGame implements Runnable {
                 }
             }
 
+            //QUANDO I BARILI ARRIVANO ALL'ULTIMO PIANO VENGONO DISTRUTTI
             distruzioneBarili();
 
         }
 
     }
 
-    public void handleMoveBarili(){
-
-    }
     public void handleMovimento(){
         Cammina cammina = logicProgram.getAnswerSet();
-        System.out.println("\nPosizione del player : X = " + player.posX + " - Y = " + player.posY + "\n");
-        System.out.println("Risposta AnswerSet : X = " + cammina.getColonna() + " - Y = " + cammina.getRiga() +  " SALTO : " + cammina.getSalta() + "\n");
-
-        //Gestione del movimento totale del personaggio
+        //In base ALL'AS si muove
         if (cammina!=null) {
 
             if (cammina.getSalta() == 1) {
-                //NON RIESCE A PRENDERE L'INPUT IN TEMPO DATI IL TEMPO DI ATTESA
                 player.jump();
             }
              if (player.getPosX() < cammina.getColonna()) {

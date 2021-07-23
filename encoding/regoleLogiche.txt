@@ -2,7 +2,7 @@ riga(1..36).
 colonne(1..38).
 
 %TANTE ISTANZE DI SCALA (UNA PER OGNI PIANO E SONO "COSTANTI")
-
+%IL MONDO DI GIOCO
 %PIANO TERRA
 scala(30,36).
 scala(30,35).
@@ -38,7 +38,7 @@ scala(22,14).
 scala(22,13).
 scala(22,12).
 
-%queste scale aggiuntive servono a non rompere tutto
+%OBIETTIVO DA RAGGIUNGERE
 %QUINTO PIANO
 scala(38,11).
 scala(38,10).
@@ -46,92 +46,81 @@ scala(38,9).
 scala(38,8).
 
 %MI SERVE SAPERE DOVE PARTO
+%USATI PER DEBUG
 %start(29,36).
 %barile(10,15).
 
-% MI SERVONO LE POSIZIONI DEI BARILI
 
-
-%salta se ci sono barili
+%SALTA VIENE USATO PER DARE L'INPUT DI SALTO IN CASO DI BARILI
 salta(1).
 salta(0).
 
 
-% Cammina finche non trovi una scala
+% OBIETTIVO: ANDARE VERSO LE SCALE
 cammina(C,R,S)|noCammina(C,R,S):- colonne(C), riga(R), salta(S).
 
 % DIFFERENZA TRA DOVE STO E DOVE DEVO ANDARE
 obiettivo(Z) :- start(C,R), scala(C1,R), Z=C-C1.
-
-%VAI A DX O SX DIPENDE DOVE TI VIENE PIU VICINA LA SCALA ( CON I WEAK )
-% PRENDITI LA DIFFERENZA TRA POSIZIONE E SCALA E METTILA TRA I WEAK
-% COME RISOLVERE? TROVARE MODO PER VERIFICARE CHE R,R1 E R2 SIANO TUTTI UGUALI
 
 
 % SERVE PER VEDERE SE CAMMINA E START SONO UGUALI ( E DEVONO ESSERLO )
 :- start(C,R), cammina(C1,R1,_), R!=R1, obiettivo(Z), Z!=0.
 
 
-%RICAVA LA DIFFERENZA TRA LA POSIZIONE DEL GIOCATORE E IL BARILE - OK -
+%RICAVA LA DIFFERENZA TRA LA POSIZIONE DEL GIOCATORE E IL BARILE - OK
 pos_critica(X):- start(C,R), barile(C1,R), Z=C-C1, &abs(Z;X).
 
-%DISTANZA CRITICA VERTICALER
+%DISTANZA CRITICA VERTICALE (DISTANZA DAL BARILE PER RIGA)
 dis_critica(X):- start(C,R), barile(C,R1), Z=R-R1, &abs(Z;X).
 
-%distanza orizzontale dal barile quando si è in critica
+%QUANDO UN BARILE E' IN POSIZIONE CRITICA VERTICALE, CONTROLLA LE COLONNE
 disOrCrit(X):- start(C,R), barile(C1,R1), dis_critica(D), D<=2, SOTT=C-C1, &abs(SOTT;X).
 
-%STRONG PER MOVIMENTO SINGOLARE MASSIMO DI 1
+%STRONG COSTRAINT PER GARANTIRE UN MOVIMENTO MASSIMO DI 1 POSTO
 :-cammina(C,R,_), start(C1,R1), Z=R-R1, &abs(Z;X), X > 1.
 :-cammina(C,R,_), start(C1,R1), Z=C-C1, &abs(Z;X), X > 1.
 
-%CAMMINA NON VA VERSO IL BARILE
+%L'AS NON DEVE ANDARE A SUICIDARSI MENTRE GIOCA
 :- cammina(C,R,_), barile(C,R).
 
 
-%PER NON AVERE ANSWER SET VUOTI - OK -
+%PER NON AVERE ANSWER SET VUOTI
 :- #count{C,R,S : cammina(C,R,S)} != 1.
 
-%Se lobiettivo è a destra e non ci vai, paghi
+%SE L'OBIETTIVO E' A DESTRA, E NON CI VAI, PAGHI
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z<0, C1 != C+1. [1@1]
 
-%Se l obiettivo è a sinistra e non ci vai, paghi
+%SE L'OBIETTIVO E' A SINISTRA, E NON CI VAI, PAGHI
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z>0, C1 != C-1. [1@1]
 
 
-% se non cè un barile nella stessa cosa, paga
-%pare funzionare il weak
-%se sei una riga e il barile non si trova sulla stessa riga e saltio saltare, allora paghi
-%:~ start(C,R), barile(C1,R1), R1!=R, cammina(_,_,S), S=1. [1@1]
-
-
-%se cè un barile e non salti grido
+%SE UN BARILE E' IN POSIZIONE CRITICA PER UCCIDERE IL PERSONAGGIO, E IL PERSONAGGIO NON SALTA, PAGA
 :~pos_critica(X), X<=2, cammina(_,_,S), S=0. [1@2]
 
-%se provi a non saltare quando c"è un barile --> paghi
+%SE L'AS HA UN SALTO, E UN BARILE NON E' IN POSIZIONE CRITICA, PAGA
 :~ start(C,R), barile(C1,R), pos_critica(X), X<=2, cammina(C2,_,_),  C2!=C. [1@2]
 
-%se salti quando sei su una scala, paghi
+%SE PROVI A SALTARE SULLA SCALA, PAGHI
 :~ start(C,R), barile(C1,R), pos_critica(X), X<=2, Z=0, obiettivo(Z), cammina(_,_,S), S=1. [1@2]
 
 
-%se sei su una scala e scegli una posizione che non è sopra, paghi.
+%SE L'AS NON TORNA UNA POSIZIONE INFERIORE SULLE SCALE, PAGA
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, R1!=R-1. [1@3]
 
-% se sei su una scala e scegli una posizione come destra e sinistra, paghi.
+% SE SULLE SCALE TI SPOSTI A DESTRA E SINISTRA SENZA MOTIVO, PAGHI
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, C!=C1. [1@3]
 
-%se l obiettivo è 1 oppure -1 e ti avvicini ad una scala invece di aspettare, paghi
+%SE SEI VICINO ALLA SCALA E UN BARILE STA SCENDENDO LA SCALA, E TU CI VAI, PAGHI
 :~ start(C,R), obiettivo(Z), cammina(C1,_,_), Z=-1, barile(C2,R2), R2<R, C2=C+1, C1!=C. [2@4]
 :~ start(C,R), obiettivo(Z), cammina(C1,_,_), Z=1, barile(C2,R2), R2<R, C2=C-1, C1!=C. [2@4]
 
-%se mentre stai salendo una scala cè un barile, e sali, ti devono ammazzare.
+%SE MENTRE SALI UNA SCALA, UN BARILE E' SOPRA DI TE, E TU NON SCEGLI DI SMETTERE DI SALIRE, PAGHI
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C2,R2), R2<R, R1!=R+1, R-R2 <5, C2=C, C1!=C-1. [1@5]
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, barile(C2,R2), R2<R, R1!=R+1, R-R2 <5, C2=C, C1!=C+1. [1@5]
 
 
-%fix per barili sulla testa mentre sali
-:~ start(C,R), cammina(C1,R1,_), disOrCrit(X), X<3, obiettivo(Z), R1<R+1. [1@6]
+%TEORICAMENTE, SE UN BARILE E0 SU UN PIANO SOPRA DI TE,E TU SALI ANCORA, PAGHI
+:~ start(C,R), cammina(C1,R1,_), disOrCrit(X), X<3, obiettivo(Z), Z=0, R1<R+1. [1@6]
 
 
 

@@ -2,7 +2,6 @@ package Model;
 
 import View.Graphics;
 
-import java.io.IOException;
 
 public abstract class GameObj {
     public int type;
@@ -21,8 +20,6 @@ public abstract class GameObj {
         }
     }
 
-    ;
-
     public void moveDown() {
         if (posY + 1 < DonkeYGame.getInstance().dimension-2) {
 
@@ -33,8 +30,6 @@ public abstract class GameObj {
         }
     }
 
-    ;
-
     public void moveLeft() {
         if (posX - 1 >= 0) {
             direzione=-1;
@@ -44,8 +39,6 @@ public abstract class GameObj {
             DonkeYGame.getInstance().swap(posX + 1, posY);
         }
     }
-
-    ;
 
     public void moveRight() {
         if (posX + 1 < DonkeYGame.getInstance().dimension-1) {
