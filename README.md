@@ -8,4 +8,5 @@
 di gioco. Quando la posizione diventa critica, e quindi il personaggio a rischio, lui decide di compiere delle mosse strategiche e non viene colpito da essi. </p>
 
 <h4> Demo del gioco con IA attiva </h4>
-https://i.imgur.com/PKfdb0Q.gif
+  <img src="https://i.imgur.com/PKfdb0Q.gif" width="600" height="600" />
+
