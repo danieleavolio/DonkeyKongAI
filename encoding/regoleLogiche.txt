@@ -103,7 +103,6 @@ disOrCrit(X):- start(C,R), barile(C1,R1), dis_critica(D), D<=2, SOTT=C-C1, &abs(
 %SE PROVI A SALTARE SULLA SCALA, PAGHI
 :~ start(C,R), barile(C1,R), pos_critica(X), X<=2, Z=0, obiettivo(Z), cammina(_,_,S), S=1. [1@2]
 
-
 %SE L'AS NON TORNA UNA POSIZIONE INFERIORE SULLE SCALE, PAGA
 :~ start(C,R), obiettivo(Z), cammina(C1,R1,_), Z=0, R1!=R-1. [1@3]
 

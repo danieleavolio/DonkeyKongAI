@@ -46,9 +46,9 @@ public  class DonkeYGame implements Runnable {
         intervalli = new int [3];
 
         //INTERVALLI DI SPAWN USATI
-        intervalli[0] = 40;
-        intervalli[2] = 50;
-        intervalli[1] = 70;
+        intervalli[0] = 35;
+        intervalli[2] = 35;
+        intervalli[1] = 35;
 
         //SETTAGGIO DEL MONDO DI GIOCO TUTTO A VUOTO
         for (int i = 0; i < gameTable.length; i++) {
